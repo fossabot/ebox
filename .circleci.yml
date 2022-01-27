@@ -1,0 +1,18 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: rust:1-buster
+    steps:
+      - checkout
+      - run: git submodule update --init
+      - run: |
+          apt update
+          apt -y install libclang-dev clang cmake libboost-all-dev
+          rustup component add rustfmt
+          rustup update
+      - run: cargo fmt --all -- --check
+      - run:
+          name: tests
+          command: cargo test -j4
